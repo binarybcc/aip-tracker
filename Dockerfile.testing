@@ -1,0 +1,46 @@
+# Testing container with PHP CLI, curl, and testing tools
+FROM php:8.1-cli
+
+# Install system dependencies and testing tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    jq \
+    default-mysql-client \
+    chromium \
+    chromium-driver \
+    nodejs \
+    npm \
+    python3 \
+    python3-pip \
+    git \
+    unzip \
+    bc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql mysqli
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install testing tools
+RUN npm install -g playwright @playwright/test
+RUN pip3 install --break-system-packages requests beautifulsoup4 selenium || true
+
+# Install PHPUnit
+RUN composer global require phpunit/phpunit
+ENV PATH="/root/.composer/vendor/bin:${PATH}"
+
+# Create test directories
+RUN mkdir -p /app/test-results /app/tests
+
+# Copy test scripts (create tests directory if needed)
+RUN mkdir -p /app/tests
+COPY test-runner.sh /app/test-runner.sh
+RUN chmod +x /app/test-runner.sh
+
+WORKDIR /app
+
+# Default command runs all tests
+CMD ["/app/test-runner.sh"]

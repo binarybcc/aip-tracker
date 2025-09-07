@@ -1,0 +1,111 @@
+# PHP 8.1 with Apache for AIP Tracker
+FROM php:8.1-apache
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    unzip \
+    curl \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+    pdo \
+    pdo_mysql \
+    mysqli \
+    gd \
+    zip \
+    opcache
+
+# Configure PHP for production-like environment
+RUN { \
+    echo 'opcache.memory_consumption=128'; \
+    echo 'opcache.interned_strings_buffer=8'; \
+    echo 'opcache.max_accelerated_files=4000'; \
+    echo 'opcache.revalidate_freq=2'; \
+    echo 'opcache.fast_shutdown=1'; \
+    echo 'opcache.enable_cli=1'; \
+} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+# Configure PHP settings for shared hosting simulation
+RUN { \
+    echo 'memory_limit=128M'; \
+    echo 'upload_max_filesize=2M'; \
+    echo 'post_max_size=2M'; \
+    echo 'max_execution_time=30'; \
+    echo 'max_input_time=30'; \
+    echo 'session.gc_maxlifetime=1440'; \
+    echo 'session.cookie_lifetime=0'; \
+    echo 'session.cookie_httponly=1'; \
+    echo 'date.timezone=America/New_York'; \
+} > /usr/local/etc/php/conf.d/shared-hosting-simulation.ini
+
+# Enable Apache modules
+RUN a2enmod rewrite headers expires deflate
+
+# Configure Apache
+RUN { \
+    echo '<VirtualHost *:80>'; \
+    echo '    DocumentRoot /var/www/html'; \
+    echo '    <Directory /var/www/html>'; \
+    echo '        AllowOverride All'; \
+    echo '        Require all granted'; \
+    echo '        DirectoryIndex index.php index.html'; \
+    echo '    </Directory>'; \
+    echo '    ErrorLog ${APACHE_LOG_DIR}/error.log'; \
+    echo '    CustomLog ${APACHE_LOG_DIR}/access.log combined'; \
+    echo '</VirtualHost>'; \
+} > /etc/apache2/sites-available/000-default.conf
+
+# Create .htaccess for security and performance
+RUN { \
+    echo 'RewriteEngine On'; \
+    echo 'RewriteCond %{REQUEST_FILENAME} !-f'; \
+    echo 'RewriteCond %{REQUEST_FILENAME} !-d'; \
+    echo ''; \
+    echo '# Security headers'; \
+    echo 'Header always set X-Content-Type-Options nosniff'; \
+    echo 'Header always set X-Frame-Options DENY'; \
+    echo 'Header always set X-XSS-Protection "1; mode=block"'; \
+    echo ''; \
+    echo '# Compression'; \
+    echo '<IfModule mod_deflate.c>'; \
+    echo '    AddOutputFilterByType DEFLATE text/plain'; \
+    echo '    AddOutputFilterByType DEFLATE text/html'; \
+    echo '    AddOutputFilterByType DEFLATE text/xml'; \
+    echo '    AddOutputFilterByType DEFLATE text/css'; \
+    echo '    AddOutputFilterByType DEFLATE application/xml'; \
+    echo '    AddOutputFilterByType DEFLATE application/xhtml+xml'; \
+    echo '    AddOutputFilterByType DEFLATE application/rss+xml'; \
+    echo '    AddOutputFilterByType DEFLATE application/javascript'; \
+    echo '    AddOutputFilterByType DEFLATE application/x-javascript'; \
+    echo '</IfModule>'; \
+    echo ''; \
+    echo '# Cache static assets'; \
+    echo '<IfModule mod_expires.c>'; \
+    echo '    ExpiresActive On'; \
+    echo '    ExpiresByType text/css "access plus 1 month"'; \
+    echo '    ExpiresByType application/javascript "access plus 1 month"'; \
+    echo '    ExpiresByType image/png "access plus 1 month"'; \
+    echo '    ExpiresByType image/jpg "access plus 1 month"'; \
+    echo '    ExpiresByType image/jpeg "access plus 1 month"'; \
+    echo '    ExpiresByType image/gif "access plus 1 month"'; \
+    echo '</IfModule>'; \
+} > /var/www/html/.htaccess
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && find /var/www/html -type d -exec chmod 755 {} \; \
+    && find /var/www/html -type f -exec chmod 644 {} \;
+
+# Expose port 80
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost/ || exit 1

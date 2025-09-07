@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  # PHP Web Server with Apache
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./logs:/var/log/apache2
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_NAME=aip_tracker
+      - DB_USER=aip_user
+      - DB_PASS=aip_secure_pass_2024
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    networks:
+      - aip-network
+
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: aip_tracker
+      MYSQL_USER: aip_user
+      MYSQL_PASSWORD: aip_secure_pass_2024
+      MYSQL_ROOT_PASSWORD: root_secure_pass_2024
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/database:/docker-entrypoint-initdb.d
+      - ./mysql-config:/etc/mysql/conf.d
+    networks:
+      - aip-network
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    ports:
+      - "8081:80"
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=aip_user
+      - PMA_PASSWORD=aip_secure_pass_2024
+    depends_on:
+      - db
+    networks:
+      - aip-network
+
+  # Testing container with tools
+  testing:
+    build:
+      context: .
+      dockerfile: Dockerfile.testing
+    volumes:
+      - .:/app
+      - ./test-results:/app/test-results
+    depends_on:
+      - web
+      - db
+    environment:
+      - TEST_BASE_URL=http://web
+      - DB_HOST=db
+      - DB_NAME=aip_tracker
+      - DB_USER=aip_user
+      - DB_PASS=aip_secure_pass_2024
+    networks:
+      - aip-network
+    profiles:
+      - testing
+
+volumes:
+  mysql_data:
+
+networks:
+  aip-network:
+    driver: bridge

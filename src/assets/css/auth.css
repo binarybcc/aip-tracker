@@ -1,0 +1,356 @@
+/* Authentication Pages Styles */
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #E8F5E8 0%, #F0F8FF 50%, #FFF8E7 100%);
+  padding: var(--spacing-lg);
+}
+
+.auth-card {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xxl);
+  width: 100%;
+  max-width: 500px;
+  border: var(--border-width) solid var(--border-gray);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.auth-logo {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-md);
+  display: block;
+}
+
+.auth-title {
+  color: var(--primary-green);
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.auth-subtitle {
+  color: var(--medium-gray);
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-xl);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.form-label {
+  font-weight: var(--font-weight-medium);
+  color: var(--dark-gray);
+  font-size: 0.95rem;
+}
+
+.form-input,
+.form-select {
+  padding: var(--spacing-md);
+  border: var(--border-width) solid var(--border-gray);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family);
+  transition: var(--transition-fast);
+  background: var(--white);
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-green);
+  box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.form-help {
+  font-size: 0.8rem;
+  color: var(--medium-gray);
+  font-style: italic;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--dark-gray);
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+  transform: scale(1.2);
+  accent-color: var(--primary-green);
+}
+
+.auth-footer {
+  text-align: center;
+  padding-top: var(--spacing-lg);
+  border-top: var(--border-width) solid var(--border-gray);
+  color: var(--medium-gray);
+}
+
+.auth-footer p {
+  margin-bottom: var(--spacing-sm);
+}
+
+.auth-footer p:last-child {
+  margin-bottom: 0;
+}
+
+.auth-link {
+  color: var(--primary-green);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: var(--transition-fast);
+}
+
+.auth-link:hover {
+  color: #236B47;
+  text-decoration: underline;
+}
+
+.auth-features {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: var(--border-width) solid var(--border-gray);
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--light-gray);
+  border-radius: var(--border-radius);
+  font-size: 0.9rem;
+}
+
+.feature-icon {
+  font-size: 1.2rem;
+}
+
+.feature-text {
+  color: var(--dark-gray);
+  font-weight: var(--font-weight-medium);
+}
+
+.auth-testimonial {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: var(--border-width) solid var(--border-gray);
+}
+
+.testimonial-content {
+  text-align: center;
+  font-style: italic;
+}
+
+.testimonial-content p {
+  color: var(--medium-gray);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+}
+
+.testimonial-author {
+  color: var(--primary-green);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.9rem;
+}
+
+/* Alert styles for auth pages */
+.alert ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.alert li {
+  padding: var(--spacing-xs) 0;
+}
+
+.alert li:last-child {
+  padding-bottom: 0;
+}
+
+/* Loading state */
+.auth-form.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.btn.loading::after {
+  content: '⏳';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .auth-container {
+    padding: var(--spacing-md);
+  }
+  
+  .auth-card {
+    padding: var(--spacing-xl);
+    max-width: none;
+  }
+  
+  .auth-logo {
+    font-size: 2rem;
+  }
+  
+  .auth-title {
+    font-size: 1.5rem;
+  }
+  
+  .auth-subtitle {
+    font-size: 1rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .feature-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .auth-logo {
+    font-size: 1.8rem;
+  }
+  
+  .auth-title {
+    font-size: 1.3rem;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .checkbox-label {
+    font-size: 0.85rem;
+  }
+  
+  .feature-item {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+  
+  .feature-text {
+    font-size: 0.85rem;
+  }
+}
+
+/* Focus states for accessibility */
+.auth-link:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+  border-radius: var(--border-radius);
+}
+
+.checkbox-label:focus-within {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+  border-radius: var(--border-radius);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .auth-card {
+    border: 2px solid var(--dark-gray);
+  }
+  
+  .form-input,
+  .form-select {
+    border: 2px solid var(--dark-gray);
+  }
+  
+  .feature-item {
+    border: var(--border-width) solid var(--border-gray);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .form-input,
+  .form-select,
+  .auth-link,
+  .btn {
+    transition: none;
+  }
+  
+  .btn.loading::after {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .auth-container {
+    background: var(--white);
+  }
+  
+  .auth-card {
+    box-shadow: none;
+    border: 2px solid var(--dark-gray);
+  }
+  
+  .btn,
+  .auth-features,
+  .auth-testimonial {
+    display: none;
+  }
+}
