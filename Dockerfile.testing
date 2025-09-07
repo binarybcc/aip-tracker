@@ -1,5 +1,6 @@
 # Testing container with PHP CLI, curl, and testing tools
-FROM php:8.1-cli
+# PHP 8.2 for AIP Tracker v0.2.1 testing with performance validation
+FROM php:8.2-cli
 
 # Install system dependencies and testing tools
 RUN apt-get update && apt-get install -y \

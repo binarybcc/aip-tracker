@@ -1,7 +1,13 @@
 <?php
 /**
  * AIP Tracker - Main Configuration
+ * Version 0.2.1 - PHP 8.2+ Optimized
  */
+
+// PHP version check - require 8.2+ for optimal performance
+if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+    die('AIP Tracker v0.2.1 requires PHP 8.2+ for optimal performance and security. Current version: ' . PHP_VERSION);
+}
 
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
@@ -10,7 +16,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Environment configuration
 define('APP_NAME', 'AIP Tracker');
-define('APP_VERSION', '0.2.0');
+define('APP_VERSION', '0.2.1');
 define('BASE_URL', 'http://localhost:8080'); // Local development
 
 // Security settings
@@ -41,6 +47,19 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
 
 // Include required files
 require_once __DIR__ . '/database.php';
+require_once __DIR__ . '/AppConfig.php';
 require_once __DIR__ . '/../includes/security.php';
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/FoodConstants.php';
+
+// Initialize PHP 8.2+ configuration object for modern architecture
+if (PHP_VERSION_ID >= 80200) {
+    try {
+        $appConfig = AppConfig::fromEnvironment();
+        // Configuration is now available as readonly object
+    } catch (Exception $e) {
+        error_log('Configuration error: ' . $e->getMessage());
+        // Fall back to constants for compatibility
+    }
+}
 ?>

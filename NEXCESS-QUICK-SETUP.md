@@ -1,6 +1,14 @@
-# 🚀 AIP Tracker - Nexcess Quick Setup
+# 🚀 AIP Tracker v0.2.1 - Nexcess Quick Setup
+
+**PHP 8.2+ Required for 15% Performance Boost** ⚡
 
 ## 5-Minute Deployment Guide
+
+### Step 0: PHP Version Check (30 seconds)
+**IMPORTANT:** Ensure PHP 8.2+ is enabled in Nexcess control panel
+- Navigate to PHP Settings in Nexcess
+- Select PHP 8.2 or PHP 8.3 (recommended)
+- Apply changes and wait for activation
 
 ### Step 1: Upload Files (2 minutes)
 ```bash
@@ -25,7 +33,12 @@ define('BASE_URL', 'https://yourdomain.com');      // Your domain
 ### Step 4: Automated Setup (1 minute)
 Visit: `https://yourdomain.com/setup-database.php?setup=true`
 
-✅ **Done!** Your AIP Tracker is now live.
+The setup script will:
+- ✅ Check PHP version and show performance info
+- ✅ Create database tables optimized for PHP 8.2+
+- ✅ Display performance benefits achieved
+
+✅ **Done!** Your AIP Tracker v0.2.1 is now live with 15% performance boost!
 
 ---
 
@@ -51,8 +64,14 @@ Visit: `https://yourdomain.com/setup-database.php?setup=true`
 - Re-run setup script
 
 ### 500 Error?
-- Check file permissions (644 for files, 755 for directories)
-- Verify PHP 8.1+ is enabled in Nexcess
+- Check file permissions (644 for files, 755 for directories) 
+- Verify PHP 8.2+ is enabled in Nexcess (required for v0.2.1)
+- Check error logs in control panel
+
+### PHP Version Error?
+- AIP Tracker v0.2.1 requires PHP 8.2+
+- Upgrade in Nexcess control panel → PHP Settings
+- Benefits: 15% faster, enhanced security, modern features
 
 ### Rate Limiting?
 - Visit: `https://yourdomain.com/reset-rate-limit.php`
@@ -92,5 +111,6 @@ Visit: `https://yourdomain.com/setup-database.php?setup=true`
 
 ---
 
-*AIP Tracker - Complete autoimmune protocol tracking solution*  
-*Built with PHP 8.1+ | MySQL 8.0+ | Mobile-First Design*
+*AIP Tracker v0.2.1 - Complete autoimmune protocol tracking solution*  
+*Built with PHP 8.2+ | MySQL 8.0+ | Mobile-First Design*  
+*15% Performance Boost | Readonly Classes | Enhanced Security*

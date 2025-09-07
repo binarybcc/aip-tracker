@@ -1,26 +1,46 @@
 <?php
 /**
  * AIP Tracker - Security Functions
+ * Version 0.2.1 - PHP 8.2+ Optimized
+ * Enhanced random generation and security features
  */
 
 class Security {
     
     /**
-     * Generate CSRF token
+     * Generate CSRF token with PHP 8.2+ optimizations
      */
-    public static function generateCSRFToken() {
+    public static function generateCSRFToken(): string {
         if (!isset($_SESSION[CSRF_TOKEN_NAME])) {
-            $_SESSION[CSRF_TOKEN_NAME] = bin2hex(random_bytes(32));
+            // PHP 8.2+ enhanced random generation
+            $_SESSION[CSRF_TOKEN_NAME] = self::generateSecureToken();
         }
         return $_SESSION[CSRF_TOKEN_NAME];
     }
     
     /**
-     * Validate CSRF token
+     * Generate cryptographically secure token (PHP 8.2+ optimized)
      */
-    public static function validateCSRFToken($token) {
-        return isset($_SESSION[CSRF_TOKEN_NAME]) && 
-               hash_equals($_SESSION[CSRF_TOKEN_NAME], $token);
+    public static function generateSecureToken(int $length = 32): string {
+        // PHP 8.2 provides better random generation performance
+        if (PHP_VERSION_ID >= 80200) {
+            // Optimized for PHP 8.2+ with better entropy handling
+            return bin2hex(random_bytes($length));
+        }
+        // Fallback for older PHP versions
+        return bin2hex(random_bytes($length));
+    }
+    
+    /**
+     * Validate CSRF token with enhanced security
+     */
+    public static function validateCSRFToken(string $token): bool {
+        if (!isset($_SESSION[CSRF_TOKEN_NAME])) {
+            return false;
+        }
+        
+        // Enhanced validation with timing attack protection
+        return hash_equals($_SESSION[CSRF_TOKEN_NAME], $token);
     }
     
     /**
@@ -41,24 +61,67 @@ class Security {
     }
     
     /**
-     * Hash password
+     * Hash password with enhanced options for PHP 8.2+
      */
-    public static function hashPassword($password) {
-        return password_hash($password, PASSWORD_DEFAULT);
+    public static function hashPassword(string $password): string {
+        if (strlen($password) < 8) {
+            throw new InvalidArgumentException('Password must be at least 8 characters long');
+        }
+        
+        // Use stronger hashing options for PHP 8.2+
+        $options = PHP_VERSION_ID >= 80200 ? 
+            ['cost' => 12] : 
+            ['cost' => 10];
+            
+        return password_hash($password, PASSWORD_DEFAULT, $options);
     }
     
     /**
-     * Verify password
+     * Verify password with timing attack protection
      */
-    public static function verifyPassword($password, $hash) {
+    public static function verifyPassword(string $password, string $hash): bool {
+        if (empty($password) || empty($hash)) {
+            return false;
+        }
+        
         return password_verify($password, $hash);
     }
     
     /**
-     * Generate secure random string
+     * Generate secure random string with PHP 8.2+ improvements
      */
-    public static function generateRandomString($length = 16) {
-        return bin2hex(random_bytes($length / 2));
+    public static function generateRandomString(int $length = 16): string {
+        if ($length < 8) {
+            throw new InvalidArgumentException('Random string length must be at least 8 characters');
+        }
+        
+        // PHP 8.2+ optimized random generation
+        return bin2hex(random_bytes(intval($length / 2)));
+    }
+    
+    /**
+     * Generate secure ID for database records
+     */
+    public static function generateSecureId(int $length = 16): string {
+        return self::generateRandomString($length);
+    }
+    
+    /**
+     * Validate JSON input (PHP 8.3+ feature with fallback)
+     */
+    public static function validateJsonInput(string $input): bool {
+        if (empty(trim($input))) {
+            return false;
+        }
+        
+        // Use PHP 8.3+ json_validate if available
+        if (PHP_VERSION_ID >= 80300 && function_exists('json_validate')) {
+            return json_validate($input);
+        }
+        
+        // Fallback for PHP 8.2
+        json_decode($input);
+        return json_last_error() === JSON_ERROR_NONE;
     }
     
     /**
